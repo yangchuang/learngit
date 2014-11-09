@@ -4,4 +4,4 @@ have a nice day!
 i want a gf!
 i don't want to go 1111
 git stacks changes.
-Creating a new branch is quick
+Creating a new branch is quick & simple
