@@ -61,3 +61,64 @@ Git鼓励大量使用分支：
 
 删除分支：git branch -d <name>
 
+git log也可以看到分支的合并情况：
+
+$ git log --graph --pretty=oneline --abbrev-commit
+
+合并dev分支，请注意--no-ff参数，表示禁用Fast forward：
+
+$ git merge --no-ff -m "merge with no-ff" dev
+
+Git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作：
+$ git stash
+刚才的工作现场存到哪去了？用git stash list命令看看：
+$ git stash list
+工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有两个办法：
+一是用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；
+另一种方式是用git stash pop，恢复的同时把stash内容也删了：
+$ git stash pop
+你可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：
+$ git stash apply stash@{0}
+要丢弃一个没有被合并过的分支，可以通过git branch -D <name>强行删除。
+
+因此，多人协作的工作模式通常是这样：
+
+首先，可以试图用git push origin branch-name推送自己的修改；
+
+如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+
+如果合并有冲突，则解决冲突，并在本地提交；
+
+没有冲突或者解决掉冲突后，再用git push origin branch-name推送就能成功！
+
+如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch --set-upstream branch-name origin/branch-name
+打一个新标签：
+$ git tag v1.0 <commit id>
+git tag查看所有标签：
+$ git tag
+git show <tagname>查看标签信息：
+$ git show v0.9
+如果标签打错了，也可以删除：
+$ git tag -d v0.1
+如果要推送某个标签到远程，使用命令git push origin 
+<tagname>：
+一次性推送全部尚未推送到远程的本地标签：
+$ git push origin --tags
+如果标签已经推送到远程，要删除远程标签就麻烦一点，先从本地删除：
+
+$ git tag -d v0.9
+Deleted tag 'v0.9' (was 6224937)
+然后，从远程删除。删除命令也是push，但是格式如下：
+
+$ git push origin :refs/tags/v0.9
+To git@github.com:michaelliao/learngit.git
+ - [deleted]         v0.9
+ 
+ 小结
+命令git push origin <tagname>可以推送一个本地标签；
+
+命令git push origin --tags可以推送全部未推送过的本地标签；
+
+命令git tag -d <tagname>可以删除一个本地标签；
+
+命令git push origin :refs/tags/<tagname>可以删除一个远程标签。
